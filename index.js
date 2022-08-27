@@ -1,8 +1,7 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 import fetch from "node-fetch";
-const request =
-  "https://api.spoonacular.com/recipes/random?number=100&apiKey=2661985fd53543f189f3e6af41ac5e7e"; //your key;
+const request = "https://api.spoonacular.com/recipes/random?number=10&apiKey="; //your key;
 
 const fs = require("fs");
 async function makeRequest(url) {
@@ -25,11 +24,17 @@ async function makeRequest(url) {
         return false;
       });
       let relevant = filteredData.map((item) => {
+        let ingredients = item.extendedIngredients.map((ing) => {
+          return ing.original;
+        });
+        let instructions = item.analyzedInstructions[0].steps.map((ins) => {
+          return ins.step;
+        });
         return {
           name: item.title,
           image: item.image,
-          steps: item.analyzedInstructions[0].steps,
-          ingredients: item.extendedIngredients,
+          steps: instructions,
+          ingredients: ingredients,
         };
       });
       return relevant;
@@ -52,4 +57,4 @@ async function write(i) {
     console.log("Data written to file");
   });
 }
-write(15);
+write(3);
